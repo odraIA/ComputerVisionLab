@@ -1,0 +1,13 @@
+imagen,metodo,lado,paso,segundos,salida
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+00.pgm,norm_global,31,8,0.00013364900041779038,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+00_norm_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+00.pgm,hist_global,31,8,0.0002522510003473144,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+00_hist_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+00.pgm,norm_local,31,8,0.00332638500003668,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+00_norm_local.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+00.pgm,hist_local,31,8,0.007049140000162879,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+00_hist_local.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+20.pgm,norm_global,31,8,0.00010365299931436311,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+20_norm_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+20.pgm,hist_global,31,8,0.0001278590007132152,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+20_hist_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+20.pgm,norm_local,31,8,0.003660648999357363,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+20_norm_local.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+20.pgm,hist_local,31,8,0.007616138000230421,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+20_hist_local.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+45.pgm,norm_global,31,8,0.0001162369990197476,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+45_norm_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+45.pgm,hist_global,31,8,0.00017505700088804588,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+45_hist_global.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+45.pgm,norm_local,31,8,0.003271944000516669,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+45_norm_local.png
+ILLUMINATION/YaleB/yaleB02/yaleB02_P00A+000E+45.pgm,hist_local,31,8,0.0066119040002377005,outputs/local_light_yaleb/yaleB02/yaleB02_P00A+000E+45_hist_local.png

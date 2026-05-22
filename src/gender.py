@@ -15,11 +15,9 @@ from keras.callbacks import LearningRateScheduler as LRS
 from keras.preprocessing.image import ImageDataGenerator
 import os
 
-
+# probar https://huggingface.co/timm
 os.system('wget https://www.dropbox.com/s/zcwlujrtz3izcw8/gender.tgz')
 os.system('tar xvzf gender.tgz')
-
-
 
 # Load
 x_train = np.load('x_train.npy')

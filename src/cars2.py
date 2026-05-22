@@ -159,6 +159,8 @@ history=model1.fit_generator(datagen.flow(x_train, y_train,batch_size=batch_size
 ###      BILINEAR        ####
 #############################
 
+# habría que aplacar data augmentation, no recomienda vit
+
 def outer_product(x):
   phi_I = tf.einsum('ijkm,ijkn->imn',x[0],x[1])		# Einstein Notation  [batch,31,31,depth] x [batch,31,31,depth] -> [batch,depth,depth]
   phi_I = tf.reshape(phi_I,[-1,128*128])	        # Reshape from [batch_size,depth,depth] to [batch_size, depth*depth]
@@ -172,7 +174,7 @@ def outer_product(x):
 
 conv=model1.get_layer('conv_model1_3') 
 d1=Dropout(0.5)(conv.output)   ## Why??
-d2=Dropout(0.5)(conv.output)   ## Why??
+d2=Dropout(0.5)(conv.output)   ## Why?? Porque así es como enseñar 2 mitades de la misma capa en lugar de 2 capas distintas
 
 x = Lambda(outer_product, name='outer_product')([d1,d2])
 
