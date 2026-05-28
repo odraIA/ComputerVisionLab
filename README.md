@@ -1,208 +1,3 @@
-# Ejercicio de reconocimiento facial con Fisherfaces
-
-El script `fisherfaces_orl.py` implementa Fisherfaces manualmente para ORL usando
-PCA antes de LDA, vecino mas cercano y curva de error variando `d'`. No usa PCA
-ni LDA de `sklearn`. La implementacion esta en `biometria/fisherfaces_orl.py` y
-el script de la raiz actua como lanzador compatible con la estructura pedida.
-
-Ejemplo:
-
-```bash
-python3 fisherfaces_orl.py \
-  --data-dir ./biometria/orl \
-  --out-dir results_fisherfaces \
-  --lda-dims 1,2,3,5,10,15,20,25,30,35,39 \
-  --pca-dim auto \
-  --reg 1e-6 \
-  --resize 0 \
-  --save-faces
-```
-
-El README especifico con el formato ORL, salidas y decisiones de estabilidad
-numerica esta en `biometria/README.md`.
-
----
-
-# Ejercicio de verificacion biometrica con ROC
-
-Este repositorio incluye un script sencillo en Python para evaluar un sistema de
-verificacion biometrica a partir de dos conjuntos de scores: scores de clientes
-genuinos y scores de impostores.
-
-## Instalacion
-
-```bash
-pip install -r requirements.txt
-```
-
-## Ejecucion
-
-Con ficheros propios:
-
-```bash
-python roc_metrics.py \
-  --clients path/to/client_scores.txt \
-  --impostors path/to/impostor_scores.txt \
-  --fn-x 0.1 \
-  --fp-x 0.05 \
-  --out-dir results_roc
-```
-
-Ejemplo integrado:
-
-```bash
-python roc_metrics.py --demo --out-dir results_demo
-```
-
-Los ficheros de entrada pueden contener scores separados por espacios, saltos de
-linea, comas o punto y coma.
-
-## Regla de decision
-
-Para cada score y umbral:
-
-- `score >= threshold`: se acepta como cliente.
-- `score < threshold`: se rechaza.
-
-En clientes genuinos, aceptar es `VP` y rechazar es `FN`. En impostores,
-aceptar es `FP` y rechazar es `VN`.
-
-## Metricas
-
-- `C = VP + FN`: numero total de clientes.
-- `I = VN + FP`: numero total de impostores.
-- `FNR = FN / C`: tasa de falsos negativos.
-- `FPR = FP / I`: tasa de falsos positivos.
-- `TPR` o sensibilidad `S = VP / C = 1 - FNR`.
-- `TNR` o especificidad `E = VN / I = 1 - FPR`.
-- `AUC`: area bajo la curva ROC, calculada manualmente con integracion
-  trapezoidal tras ordenar los puntos por `FPR` creciente.
-- `EER aproximado`: punto donde `abs(FPR - FNR)` es minimo.
-
-## Curva ROC
-
-La curva ROC representa `FPR` en el eje X y sensibilidad `TPR = 1 - FNR` en el
-eje Y. El script prueba como umbrales todos los scores de clientes e impostores,
-anadiendo tambien un umbral menor que el minimo y otro mayor que el maximo para
-cubrir los extremos. Si todos los scores estan entre 0 y 1, incluye ademas los
-umbrales `0.0` y `1.0`.
-
-Una curva mas cercana a la esquina superior izquierda indica mejor separacion
-entre clientes e impostores. La diagonal representa comportamiento aleatorio.
-
-## D-Prime
-
-El script calcula:
-
-```text
-d_prime = (mu_clientes - mu_impostores) / sqrt(var_clientes + var_impostores)
-```
-
-`mu_clientes` y `var_clientes` se calculan sobre los scores de clientes.
-`mu_impostores` y `var_impostores` se calculan sobre los scores de impostores.
-La varianza usada por defecto es varianza poblacional, equivalente a `numpy.var`
-con `ddof=0`.
-
-Un `D-Prime` mayor indica mayor separacion entre las distribuciones de clientes e
-impostores.
-
-## Ficheros de salida
-
-El directorio indicado con `--out-dir` contiene:
-
-- `roc_points.csv`: tabla con `threshold`, `VP`, `VN`, `FP`, `FN`, `TPR`, `S`,
-  `FPR`, `FNR`, `TNR` y `E`.
-- `roc_curve.png`: grafica de la curva ROC.
-- `report.txt`: informe legible con `AUC`, `D-Prime`, `FP(FN ~= X)`,
-  `FN(FP ~= X)` y `EER aproximado`.
-- `report.json`: el mismo informe en formato estructurado.
-
-Para `FP(FN = X)`, el informe incluye el punto cuyo `FNR` es mas cercano a `X` y
-tambien el mejor punto que cumple `FNR <= X`, minimizando `FPR`. Para
-`FN(FP = X)`, incluye el punto cuyo `FPR` es mas cercano a `X` y tambien el
-mejor punto que cumple `FPR <= X`, minimizando `FNR`.
-
----
-
-# Ejercicio de normalizacion local de iluminacion facial
-
-El script `local_light.py` implementa normalizacion y ecualizacion de intensidad
-en escala de grises para imagenes faciales ya alineadas en traslacion, escala y
-rotacion. El objetivo es corregir variaciones de iluminacion sin usar modelos
-externos.
-
-## Formulas implementadas
-
-Normalizacion global:
-
-```text
-f(I(x,y)) = (I(x,y) - mu_I) / sigma_I
-```
-
-Ecualizacion global:
-
-```text
-f(I(x,y)) = ((G - 1) / (M * N)) * H(I(x,y))
-```
-
-Normalizacion local:
-
-```text
-f(w(x,y)) = (w(x,y) - mu_w) / sigma_w
-```
-
-La media y la varianza de cada ventana se calculan con imagenes integrales de
-`I` e `I^2`. Si las ventanas se solapan, cada pixel acumula las transformaciones
-obtenidas en todas las ventanas donde aparece y se guarda el promedio.
-
-Ecualizacion local:
-
-```text
-f(w(x,y)) = ((G - 1) / (m * n)) * H_w(w(x,y))
-```
-
-`H_w` es el histograma acumulado de la ventana local. La implementacion incluye
-un clipping opcional tipo CLAHE: con `--clip-limit > 0`, el histograma local se
-recorta a un maximo relativo y el exceso se redistribuye uniformemente.
-
-## Uso
-
-Instalacion:
-
-```bash
-pip install -r requirements.txt
-```
-
-Ejecutar todos los metodos sobre una imagen:
-
-```bash
-python local_light.py \
-  --input images/face.png \
-  --out-dir results_light \
-  --method all \
-  --window-size 15 \
-  --stride 1 \
-  --clip-limit 0 \
-  --save-comparison
-```
-
-Procesar un directorio:
-
-```bash
-python local_light.py --input path/to/images --out-dir results_light --method local_histeq
-```
-
-Formatos soportados: `png`, `jpg`, `jpeg`, `bmp` y `pgm`.
-
-## Salidas
-
-El directorio de resultados contiene una imagen procesada por cada metodo, una
-figura comparativa si se usa `--save-comparison`, y `summary.csv` con nombre de
-imagen, metodo, tamano de ventana, `stride`, tiempo de ejecucion y ruta de
-salida.
-
----
-
 # Computer Vision Lab (up to 10 points)
 
 ## Basic implementations
@@ -250,6 +45,64 @@ Images from "Labeled Faces in the Wild" dataset (LFW) in realistic scenarios, po
 * Implement a model with >95% accuracy with less than 100K parameters
   
   get some inspiration from [Paper](https://pdfs.semanticscholar.org/d0eb/3fd1b1750242f3bb39ce9ac27fc8cc7c5af0.pdf)
+
+### Experiment script
+
+The script `src/gender.py` trains and evaluates two CNNs. It keeps the original
+dataset loading path compatible with `x_train.npy`, `x_test.npy`, `y_train.npy`
+and `y_test.npy`, downloads `gender.tgz` only when those arrays are missing, and
+reuses the arrays already present in `notebook/`.
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Small model, constrained to less than 100K trainable parameters:
+
+```bash
+python src/gender.py \
+  --model small \
+  --epochs 50 \
+  --batch-size 64 \
+  --out-dir results_gender \
+  --augment
+```
+
+Strong model:
+
+```bash
+python src/gender.py \
+  --model strong \
+  --epochs 50 \
+  --batch-size 64 \
+  --out-dir results_gender \
+  --augment
+```
+
+Both models:
+
+```bash
+python src/gender.py --model both --epochs 50 --batch-size 64 --out-dir results_gender --augment
+```
+
+Main outputs in `results_gender/`:
+
+- `best_small.keras` and `best_strong.keras`: best checkpoints selected by
+  `val_accuracy`.
+- `summary.json` and `summary.txt`: final test accuracy, test loss, trainable
+  parameter count and total parameter count.
+- `confusion_matrix_small.png` and `confusion_matrix_strong.png`: confusion
+  matrices.
+- `history_small.png` and `history_strong.png`: training and validation curves.
+- `classification_report_small.txt` and `classification_report_strong.txt`:
+  precision, recall, F1 and support per class.
+
+The `small` model uses separable convolutions, `BatchNormalization` and
+`Dropout`. The script checks that it has fewer than `100000` trainable
+parameters, which enforces a compact model instead of solving the exercise with
+a large network.
     
 
 ---
@@ -383,16 +236,99 @@ Exercise:
 * Split data 80% training 20% test
 * Get results over test set 
 
+### Image segmentation: U-Net ISIC
+
+The script `src/isic_unet_segmentation.py` implements a simple PyTorch U-Net for
+binary melanoma lesion segmentation. It searches recursively for image files
+(`jpg`, `jpeg`, `png`) and matching masks. The usual expected naming is:
+
+```text
+data/isic_segmentation/
+  ISIC_0000000.jpg
+  ISIC_0000000_segmentation.png
+  ISIC_0000001.jpg
+  ISIC_0000001_segmentation.png
+```
+
+The files can also be split into folders such as `images/` and `masks/`; mask
+filenames or folder names should contain `segmentation`, `mask` or
+`groundtruth`.
+
+Example run:
+
+```bash
+python src/isic_unet_segmentation.py \
+  --data-dir data/isic_segmentation \
+  --out-dir results_isic_unet \
+  --epochs 30 \
+  --batch-size 8 \
+  --image-size 256
+```
+
+The split is deterministic: 80% train and 20% test, with an optional validation
+split from the training part controlled by `--val-ratio` (default `0.1`). Images
+and masks are resized to `--image-size`, images are normalized to `[0, 1]`, and
+masks are binarized. Training uses synchronized horizontal flips, vertical flips
+and small rotations.
+
+Reported test metrics:
+
+- `test_loss`: BCEWithLogitsLoss plus Dice loss.
+- `dice`: overlap score `2 * intersection / (prediction + ground truth)`.
+- `iou`: Jaccard index, `intersection / union`.
+- `pixel_accuracy`: fraction of correctly classified pixels.
+
+Generated files in `results_isic_unet/`:
+
+- `best_unet.pt`: best checkpoint selected by validation Dice.
+- `metrics.json` and `metrics.txt`: final test metrics.
+- `loss_curve.png` and `dice_curve.png`: training curves.
+- `history.json` and `split.json`: reproducibility metadata.
+- `examples/example_XXX.png`: test examples with image, ground truth,
+  prediction and overlay.
+
+---
+
+## Wide ResNet on CIFAR10
+
+The script `src/cifar_wideresnet.py` implements a simple Wide ResNet for CIFAR10
+with TensorFlow/Keras. It uses `keras.datasets.cifar10`, normalizes images to
+`[0, 1]`, trains with sparse labels, and uses CUDA automatically when TensorFlow
+detects a GPU.
+
+Example run:
+
+```bash
+python src/cifar_wideresnet.py \
+  --depth 16 \
+  --width 4 \
+  --epochs 30 \
+  --batch-size 128 \
+  --augment \
+  --out-dir results_cifar_wrn
+```
+
+`--depth` follows the Wide ResNet formula `depth = 6N + 4`, so
+`N = (depth - 4) // 6` is the number of residual blocks in each stage. `--width`
+is the widening factor `k`: the residual stages use `16k`, `32k` and `64k`
+filters. If `--dropout` is greater than zero, dropout is applied inside each
+residual block between the two convolutions.
+
+Generated files in `results_cifar_wrn/`:
+
+- `best_wrn.keras`: best model selected by validation accuracy.
+- `model_summary.txt`: Keras model summary and parameter count.
+- `history.json` and `training_log.csv`: training history.
+- `training_curves.png`: loss and accuracy curves.
+- `confusion_matrix.csv` and `confusion_matrix.png`: CIFAR10 test confusion
+  matrix.
+- `summary.json` and `summary.txt`: final test accuracy, test loss, best
+  validation accuracy, parameter count and run configuration.
+
 
 ## Other project? 
 
 You are welcome!
-
-
-
-
-
-
 
 
 

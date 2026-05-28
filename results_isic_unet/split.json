@@ -1,0 +1,8 @@
+{
+  "data_dir": "isic_segmentations",
+  "total_pairs": 2750,
+  "train_images": 1980,
+  "val_images": 220,
+  "test_images": 550,
+  "seed": 42
+}

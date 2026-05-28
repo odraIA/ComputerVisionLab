@@ -1,0 +1,15 @@
+Gender recognition experiment summary
+
+small model
+  test_accuracy: 0.9535
+  test_loss: 0.1229
+  trainable_params: 64466
+  total_params: 65794
+  best_model_path: results_gender/best_small.keras
+
+strong model
+  test_accuracy: 0.9762
+  test_loss: 0.0739
+  trainable_params: 2158306
+  total_params: 2161506
+  best_model_path: results_gender/best_strong.keras

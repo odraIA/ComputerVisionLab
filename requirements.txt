@@ -4,3 +4,8 @@ matplotlib
 opencv-python
 pillow
 scipy
+tensorflow
+torch
+torchvision
+timm
+tqdm

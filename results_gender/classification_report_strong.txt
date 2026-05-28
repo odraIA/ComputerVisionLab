@@ -1,0 +1,5 @@
+class precision recall f1-score support
+label_0    0.9816 0.9878   0.9847    2052
+label_1    0.9571 0.9362   0.9466     596
+
+accuracy 0.9762

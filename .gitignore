@@ -3,3 +3,6 @@ biometria/ORLProcessed/
 
 notebook/gender.tgz
 notebook/x_train.npy
+__pycache__/
+*.pyc
+isic_segmentation/

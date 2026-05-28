@@ -1,0 +1,11 @@
+ISIC U-Net segmentation test metrics
+test_loss: 0.332846
+dice: 0.866313
+iou: 0.764156
+pixel_accuracy: 0.947013
+
+train_images: 1980
+val_images: 220
+test_images: 550
+best_epoch: 29
+device: cpu

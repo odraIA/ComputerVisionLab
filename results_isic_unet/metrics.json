@@ -1,0 +1,17 @@
+{
+  "test_loss": 0.33284606673500755,
+  "dice": 0.8663133518236448,
+  "iou": 0.7641559095868424,
+  "pixel_accuracy": 0.9470131059126421,
+  "train_images": 1980,
+  "val_images": 220,
+  "test_images": 550,
+  "best_epoch": 29,
+  "best_validation_dice": 0.8723234437649416,
+  "device": "cpu",
+  "image_size": [
+    256,
+    256
+  ],
+  "seed": 42
+}

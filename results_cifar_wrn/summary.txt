@@ -1,0 +1,25 @@
+Wide ResNet on CIFAR10
+=======================
+
+Model: WRN-16-4
+Residual blocks per stage N: 2
+Dropout: 0.0
+Data augmentation: True
+Train images: 45000
+Validation images: 5000
+Test images: 10000
+Parameter count: 2754298
+Best validation accuracy: 0.9262
+Test loss: 0.4778
+Test accuracy: 0.9195
+
+Generated files:
+- best_wrn.keras
+- model_summary.txt
+- history.json
+- training_log.csv
+- training_curves.png
+- confusion_matrix.csv
+- confusion_matrix.png
+- summary.json
+- summary.txt
